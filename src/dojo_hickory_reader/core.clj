@@ -1,7 +1,9 @@
 (ns dojo-hickory-reader.core
   (:require [clj-http.lite.client :as client]
             [hickory.core :as hickory]
-            [hickory.select :as s]))
+            [hickory.select :as s]
+            [incanter.charts :as charts]
+            [incanter.core :as core]))
 
 (defn read-url [url]
   (let [response (client/get url)]
@@ -26,11 +28,24 @@
        (filter (complement string?))
        (filter #(= (% :type) :element))))
 
+(defn tags [hickory-document]
+  (map :tag (elements hickory-document)))
+
 (defn count-elements [hickory-document]
   (count (elements hickory-document)))
 
 (defn unique-elements [hickory-document]
-  (into #{} (map :tag (elements hickory-document))))
+  (into #{} (tags hickory-document)))
 
 (defn count-element-types [hickory-document]
-  (frequencies (map :tag (elements hickory-document))))
+  (frequencies (tags hickory-document)))
+
+(defn transpose [assoc-seq]
+  (apply mapv vector assoc-seq))
+
+(defn display-tag-frequencies
+  [hickory-document]
+  (core/view
+   (let [freqs (count-element-types hickory-document)
+         [tags counts] (transpose (reverse (sort-by second freqs)))]
+     (charts/bar-chart tags counts))))
