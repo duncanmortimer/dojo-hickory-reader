@@ -31,3 +31,6 @@
 
 (defn unique-elements [hickory-document]
   (into #{} (map :tag (elements hickory-document))))
+
+(defn count-element-types [hickory-document]
+  (frequencies (map :tag (elements hickory-document))))
