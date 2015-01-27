@@ -26,7 +26,7 @@
   (->> hickory-document
        (tree-seq :content :content)
        (filter (complement string?))
-       (filter #(= (% :type) :element))))
+       (filter #(= (:type %) :element))))
 
 (defn tags [hickory-document]
   (map :tag (elements hickory-document)))
@@ -41,7 +41,7 @@
   (frequencies (tags hickory-document)))
 
 (defn transpose [assoc-seq]
-  (apply mapv vector assoc-seq))
+  (apply map vector assoc-seq))
 
 (defn display-tag-frequencies
   [hickory-document]
