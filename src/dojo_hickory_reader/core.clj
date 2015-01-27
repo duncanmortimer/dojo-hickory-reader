@@ -20,20 +20,14 @@
 (defn select-body [hickory-document]
   (s/select (s/tag :body) hickory-document))
 
-
-
-(defn count-elements [hickory-document]
+(defn elements [hickory-document]
   (->> hickory-document
        (tree-seq :content :content)
-       (filter #(= (% :type) :element))
-       count))
+       (filter (complement string?))
+       (filter #(= (% :type) :element))))
 
+(defn count-elements [hickory-document]
+  (count (elements hickory-document)))
 
-
-
-
-
-
-
-
-
+(defn unique-elements [hickory-document]
+  (into #{} (map :tag (elements hickory-document))))
